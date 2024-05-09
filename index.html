@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form id="contactForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" autocomplete="name"><br><br>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" autocomplete="email"><br><br>
+        <label for="message">Message:</label><br>
+        <textarea id="message" name="message" rows="4" cols="50" autocomplete="message"></textarea><br><br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <ul id="contactList"></ul>
+    <button id="clearContacts">Clear Contacts</button>
+</body>
+
+<script>
+    document.getElementById('contactForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        let name = document.getElementById('name').value;
+        let email = document.getElementById('email').value;
+        let message = document.getElementById('message').value;
+
+        let contact = {
+            name: name,
+            email: email,
+            message: message
+        };
+        console.log(contact);
+
+        let contactJSON = JSON.stringify(contact);
+        console.log(contactJSON);
+
+        localStorage.setItem('savedContact', contactJSON);
+        showSavedContact(contact);
+    });
+
+    function showSavedContact() {
+        let savedContact = JSON.parse(localStorage.getItem('savedContact'));
+        console.log(savedContact);
+        document.getElementById('name').value = savedContact.name;
+        document.getElementById('email').value = savedContact.email;
+        document.getElementById('message').value = savedContact.message;
+    }
+    //exta 
+
+    const contactForm = document.getElementById('contactForm');
+    const contactList = document.getElementById('contactList');
+    const clearContacts = document.getElementById('clearContacts');
+
+    window.onload = () => {
+        loadContacts();
+    };
+
+    contactForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        let name = document.getElementById('name').value;
+        let email = document.getElementById('email').value;
+
+        savedContact(name, email);
+        this.reset();
+    });
+    clearContacts.addEventListener('click', function () {
+        localStorage.clear();
+        contactList.innerHTML = '';
+    });
+
+    function saveContact(name, email) {
+        let contacts = JSON.parse(localStorage.getItem('contacts')) || [];
+        contacts.push({ name, email });
+        localStorage.setItem('contacts', JSON.stringify(contacts));
+        displayContacts();
+    }
+
+    // Function to load contacts from Local Storage
+    function loadContacts() {
+        let contacts = JSON.parse(localStorage.getItem('contacts')) || [];
+        contacts.forEach(contact => {
+            const li = document.createElement('li');
+            li.textContent = `Name: ${contact.name}, Email: ${contact.email}`;
+            contactList.appendChild(li);
+        });
+    }
+
+    // Function to display contacts in the DOM
+    function displayContacts() {
+        contactList.innerHTML = '';
+        loadContacts();
+    }
+
+</script>
+
+</html>
